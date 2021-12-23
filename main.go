@@ -8,7 +8,6 @@ import (
 
 	"github.com/martin-helmich/kubernetes-crd-example/api/types/v1alpha1"
 	clientV1alpha1 "github.com/martin-helmich/kubernetes-crd-example/clientset/v1alpha1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes/scheme"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
@@ -37,6 +36,12 @@ func main() {
 		panic(err)
 	}
 
+	err = v1alpha1.CreateCRD(config)
+
+	if err != nil {
+		panic(err)
+	}
+
 	v1alpha1.AddToScheme(scheme.Scheme)
 
 	clientSet, err := clientV1alpha1.NewForConfig(config)
@@ -44,14 +49,15 @@ func main() {
 		panic(err)
 	}
 
-	projects, err := clientSet.Projects("default").List(metav1.ListOptions{})
-	if err != nil {
-		panic(err)
-	}
+	/*	projects, err := clientSet.Projects("default").List(metav1.ListOptions{})
+		if err != nil {
+			panic(err)
+		}
 
-	fmt.Printf("projects found: %+v\n", projects)
+		fmt.Printf("projects found: %+v\n", projects)
+	*/
 
-	store := WatchResources(clientSet)
+	store := WatchResources(clientSet, "default")
 
 	for {
 		projectsFromStore := store.List()

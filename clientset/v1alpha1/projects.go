@@ -1,6 +1,8 @@
 package v1alpha1
 
 import (
+	"context"
+
 	"github.com/martin-helmich/kubernetes-crd-example/api/types/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/watch"
@@ -28,7 +30,7 @@ func (c *projectClient) List(opts metav1.ListOptions) (*v1alpha1.ProjectList, er
 		Namespace(c.ns).
 		Resource("projects").
 		VersionedParams(&opts, scheme.ParameterCodec).
-		Do().
+		Do(context.TODO()).
 		Into(&result)
 
 	return &result, err
@@ -42,7 +44,7 @@ func (c *projectClient) Get(name string, opts metav1.GetOptions) (*v1alpha1.Proj
 		Resource("projects").
 		Name(name).
 		VersionedParams(&opts, scheme.ParameterCodec).
-		Do().
+		Do(context.TODO()).
 		Into(&result)
 
 	return &result, err
@@ -55,7 +57,7 @@ func (c *projectClient) Create(project *v1alpha1.Project) (*v1alpha1.Project, er
 		Namespace(c.ns).
 		Resource("projects").
 		Body(project).
-		Do().
+		Do(context.TODO()).
 		Into(&result)
 
 	return &result, err
@@ -68,5 +70,5 @@ func (c *projectClient) Watch(opts metav1.ListOptions) (watch.Interface, error) 
 		Namespace(c.ns).
 		Resource("projects").
 		VersionedParams(&opts, scheme.ParameterCodec).
-		Watch()
+		Watch(context.TODO())
 }
